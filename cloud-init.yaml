@@ -1,0 +1,22 @@
+#cloud-config
+users:
+  - name: andu
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+runcmd:
+  # DigitalOcean provides the SSH key to root. Give to to the user
+  - mkdir --parents /home/andu/.ssh
+  - cp /root/.ssh/authorized_keys /home/andu/.ssh/
+  - chown -R andu:andu /home/andu/.ssh
+  - chmod 700 /home/andu/.ssh
+  - chmod 600 /home/andu/.ssh/authorized_keys
+  
+  # Install docker
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
