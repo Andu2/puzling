@@ -1,10 +1,4 @@
 localhost, puzl.ing {
 	root /srv/puzlinghome
 	file_server
-
-	handle_path /dev* {
-		file_server {
-			root /srv/devdoctrine
-		}
-	}
 }

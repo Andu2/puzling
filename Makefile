@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: plan apply destroy
+.PHONY: plan apply destroy deploy-caddy dev
 
 include .env
 export
@@ -21,3 +21,6 @@ deploy-caddy:
 	scp -r conf andu@shh.puzl.ing:/opt/caddy/conf
 # TODO: run as andu instead of root, shit's complicated though
 	ssh andu@shh.puzl.ing "cd /opt/caddy && sudo docker compose up -d"
+
+dev:
+	HTTP_PORT=8080 HTTPS_PORT=8443 docker compose up -d
