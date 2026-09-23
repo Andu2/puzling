@@ -1,4 +1,0 @@
-localhost, puzl.ing {
-	root /srv/puzlinghome
-	file_server
-}

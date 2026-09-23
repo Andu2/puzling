@@ -1,0 +1,37 @@
+http://localhost, :80 {
+	root /srv/puzlinghome
+	file_server
+
+	# /analytics does not redirect automatically like other pages do since it's a separate file server
+	redir /analytics /analytics/ 308
+	handle_path /analytics/* {
+		root /var/log/caddy/goaccess-report
+		file_server
+	}	
+
+	handle_errors {
+		respond "{err.status_code} {err.status_text}"
+	}
+
+	# Mimicking a whitelist by deleting all headers and adding the ones we care about back
+	# There are too many variations of headers from Cloudflare and such to try to filter them all out
+	log_append user_agent {http.request.header.User-Agent}
+    log_append referer {http.request.header.Referer}
+	log {
+		output file /var/log/caddy/puzlinghome.log {
+			mode 644
+			roll_size 100mb
+			roll_keep 10
+		}
+		# remove info we don't care about to keep logs small
+		format filter {
+			request>remote_port delete
+            request>headers delete
+			request>proto delete
+        	request>tls delete
+            resp_headers delete
+            bytes_read delete
+            user_id delete
+		}
+	}
+}

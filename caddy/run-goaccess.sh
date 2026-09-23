@@ -1,0 +1,1 @@
+goaccess --config-file /opt/caddy/goaccess.conf --output /var/log/caddy/goaccess-report/index.html
